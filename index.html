@@ -13,9 +13,10 @@
     <div class="container"> 
         
        <input type="text" id="tastinput" placeholder="Shkruaj nje detyre">
-      
-       <button id="shtodetyrebtn">➕</button> 
+       <button id="shtodetyrebtn">➕</button>  
+       <input type="search" id="search" placeholder="Kerko detyren"> 
        <p>Kliko mbi detyrat e perfunduara</p>
+
        <ul id="detyrat"></ul>
     </div>
     <p class="p2"> Zgjidhni statusin e detyres tuaj</p>
@@ -24,6 +25,16 @@
         <option value="completed">Completed</option>
         <option value="pending">Pending</option>
     </select>
+    </div>
+    <div id="editmodal" class="modal">
+    <div class="modal-content">
+        <h3>Edit Note</h3>
+        <textarea  id="editContent" placeholder=""></textarea>
+        <div class="modal-buttons">
+            <button id="cancelbtn">Cancel</button>
+            <button id="donebtn">Done</button>
+        </div>
+     </div>
     </div>
 
     <script src="index.js"></script>

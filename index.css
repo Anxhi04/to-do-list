@@ -61,3 +61,25 @@ select{
 .p2{
     color: rgb(146, 67, 220);
 }
+
+.modal{
+    display: none;
+    position: fixed;
+    top: 50px;
+    width: 300px;
+    height: 300px;
+    justify-content: center;
+    align-items: center;
+
+}
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+}
+#search{
+    margin-top: 10px;
+    height: 22px;
+    width: 150px;
+}
