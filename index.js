@@ -63,9 +63,26 @@ function shfaqlisten(tasks = listadetarr, filter = "all") {
             shfaqlisten(filter);
             localStorage.setItem("tasks", JSON.stringify(listadetarr));
         });
+ 
     });
 }
+input.addEventListener("keydown", function(event) {
+    if(event.key==="Enter"){
+    const text = input.value.trim();
+    if (text === "") return; 
 
+    let detyre = {
+        id: Date.now(),
+        text: text,
+        completed: false
+    };
+
+    listadetarr.push(detyre);
+    shfaqlisten();
+    localStorage.setItem("tasks", JSON.stringify(listadetarr));
+    input.value = "";
+    }
+});
         
 cancelbutton.addEventListener("click", function(){
     editmodal.style.display="none";
