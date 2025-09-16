@@ -7,6 +7,7 @@ const editcontent = document.getElementById("editContent");
 const cancelbutton = document.getElementById("cancelbtn");
 const donebutton = document.getElementById("donebtn");
 const search = document.getElementById("search");
+
 let listadetarr = [];
 let currentid = null;
 
@@ -17,91 +18,78 @@ if (storedTasks) {
     shfaqlisten();
 }
 
-function shfaqlisten(tasks = listadetarr, filter = "all") {
+// Funksioni për shfaqjen e listës
+function shfaqlisten(tasks = listadetarr, filterType = "all") {
     listadet.innerHTML = "";
 
     tasks.forEach(detyre => {
-        if(filter === "completed" && !detyre.completed) return;
-        if(filter === "pending" && detyre.completed) return;
+        if (filterType === "completed" && !detyre.completed) return;
+        if (filterType === "pending" && detyre.completed) return;
 
         const li = document.createElement("li");
         li.classList.add("listel");
+
         const span = document.createElement("span");
-        span.textContent=detyre.text;
+        span.textContent = detyre.text;
         span.classList.add("note-text");
-        
         li.appendChild(span);
 
-        if(detyre.completed) li.classList.add("completed");
+        if (detyre.completed) li.classList.add("completed");
 
+        // Butoni fshi
         const button = document.createElement("button");
         button.classList.add("fshibtn");
         button.textContent = "❌";
 
+        // Butoni edit
         const editbtn = document.createElement("button");
-        editbtn.textContent="📝";
+        editbtn.textContent = "📝";
 
         li.appendChild(button);
         li.appendChild(editbtn);
         listadet.appendChild(li);
 
-        li.addEventListener("click", function() {
+        // Klik mbi li -> toggle completed
+        li.addEventListener("click", function () {
             detyre.completed = !detyre.completed;
             li.classList.toggle("completed");
             localStorage.setItem("tasks", JSON.stringify(listadetarr));
         });
-        editbtn.addEventListener("click", function(e){
+
+        // Klik mbi edit
+        editbtn.addEventListener("click", function (e) {
             e.stopPropagation();
             currentid = detyre.id;
-            editmodal.style.display="flex";
-            editcontent.value=li.querySelector(".note-text").textContent;
+            editmodal.style.display = "flex";
+            editcontent.value = li.querySelector(".note-text").textContent;
         });
 
-        button.addEventListener("click", function(e) {
+        // Klik mbi delete
+        button.addEventListener("click", function (e) {
             e.stopPropagation();
             listadetarr = listadetarr.filter(t => t.id !== detyre.id);
-            shfaqlisten(filter);
+            shfaqlisten(listadetarr, filter.value); // ✅ përdor filter.value
             localStorage.setItem("tasks", JSON.stringify(listadetarr));
         });
- 
     });
 }
-input.addEventListener("keydown", function(event) {
-    if(event.key==="Enter"){
-    const text = input.value.trim();
-    if (text === "") return; 
 
-    let detyre = {
-        id: Date.now(),
-        text: text,
-        completed: false
-    };
-
-    listadetarr.push(detyre);
-    shfaqlisten();
-    localStorage.setItem("tasks", JSON.stringify(listadetarr));
-    input.value = "";
+// Shtimi i detyrës me Enter
+input.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+        addTask();
     }
 });
-        
-cancelbutton.addEventListener("click", function(){
-    editmodal.style.display="none";
+
+// Shtimi i detyrës me buton
+btn.addEventListener("click", function () {
+    addTask();
 });
 
-donebutton.addEventListener("click", function(e){
-    e.stopPropagation();
-    const detyre = listadetarr.find(t=> t.id===currentid);
-    detyre.text=editcontent.value;
-    localStorage.setItem("tasks", JSON.stringify(listadetarr));
-    shfaqlisten();
-    editmodal.style.display="none";
-});
-
-
-// Shtimi i detyrave
-btn.addEventListener('click', function() {
+// Funksioni për shtim
+function addTask() {
     const text = input.value.trim();
-    if (text === "") return; 
+    if (text === "") return;
 
     let detyre = {
         id: Date.now(),
@@ -110,22 +98,37 @@ btn.addEventListener('click', function() {
     };
 
     listadetarr.push(detyre);
-    shfaqlisten();
+    shfaqlisten(listadetarr, filter.value);
     localStorage.setItem("tasks", JSON.stringify(listadetarr));
     input.value = "";
+}
+
+// Edit cancel
+cancelbutton.addEventListener("click", function () {
+    editmodal.style.display = "none";
 });
 
+// Edit done
+donebutton.addEventListener("click", function (e) {
+    e.stopPropagation();
+    const detyre = listadetarr.find(t => t.id === currentid);
+    detyre.text = editcontent.value;
+    localStorage.setItem("tasks", JSON.stringify(listadetarr));
+    shfaqlisten(listadetarr, filter.value);
+    editmodal.style.display = "none";
+});
 
-filter.addEventListener("change", function(){
-    const selectedfilter= filter.value;
+// Filtrimi i detyrave
+filter.addEventListener("change", function () {
+    const selectedfilter = filter.value;
     shfaqlisten(listadetarr, selectedfilter);
 });
 
-//funx per kerkimin 
-search.addEventListener("input", function(){
+// Kërkimi
+search.addEventListener("input", function () {
     const texti = search.value.toLowerCase();
     const filteredTasks = listadetarr.filter(detyre =>
-    detyre.text.toLowerCase().includes(texti)
-);
-   shfaqlisten(filteredTasks);
+        detyre.text.toLowerCase().includes(texti)
+    );
+    shfaqlisten(filteredTasks, filter.value);
 });
